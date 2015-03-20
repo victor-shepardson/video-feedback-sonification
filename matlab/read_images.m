@@ -20,14 +20,14 @@ for frame = frames
     color_img = imread(fname);
     img = rgb2hsv(color_img);
     
-    % reduce color data: hue -> angle, value*saturation -> log magnitude
+    % reduce color data: hue -> angle, value*saturation -> magnitude
     angle = double(img(:,:,1)')*2*pi;
     %mag = window(t) * double(img(:,:,3)')/255;
     %mag = double(img(:,:,3)')/255;
-    mag = 2.^(10*double(img(:,:,2)').*double(img(:,:,3)')/255-10);
+    mag = (double(img(:,:,2)').*double(img(:,:,3)')/255);
     
-    [img_real img_cplx] = pol2cart(angle, mag);
-    img = img_real;%+1i*img_cplx;
+    img = mag.*exp(1i*angle);
+    
     dim = size(img)./resamp;
     
     %allocate on first frame
@@ -59,7 +59,6 @@ for frame = frames
             data(:, :, t, f) = plane;
         end
     end
-    %sum(sum(sum(sum(data(:,:,max(t-1,1),:)))))
 end
 
 size(data)

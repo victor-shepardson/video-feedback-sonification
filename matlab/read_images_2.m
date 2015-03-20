@@ -2,7 +2,7 @@ function [ data, video ] = read_images_2( path, frames, filts, resamp )
 % read a series of images into a 4d [scale rate time frequency] matrix
 % path: directory containing images
 % frames = [first:last]: indeces of images to read
-% cell is a slice in the vertical dimension, numbered in row major order
+% filts: number of frequency/tonotopic axis bands
 % resamp: factor by which to downsample each scale-rate surface e.g. resamp=2
 % means 4 pixels per filter
 vdim = [];
@@ -61,7 +61,7 @@ for frame = frames
             if window
                 activs = activs.*fwindow;
             end
-            %activs = abs(activs).*exp(rand(size(activs))*pi*2i); %random
+            activs = abs(activs).*exp(rand(size(activs))*pi*2i); %random
             %phase
             data(s,r,t,:) = activs;
         end
