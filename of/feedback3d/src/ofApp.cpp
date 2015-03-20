@@ -16,8 +16,9 @@ void ofApp::setup(){
 	gui.setup(params);
 	sync.setup((ofParameterGroup&)gui.getParameter(),6666,"localhost",6667);
 
-    movieWidth = 2*11; movieHeight = 2*18;
-    sliceX = 1; sliceY = 1;
+    sliceX = 16; sliceY = 16;
+        movieWidth = 256; movieHeight = 256;
+//    movieWidth = 2*11; movieHeight = 2*18;
 
     ofEnableDataPath();
 

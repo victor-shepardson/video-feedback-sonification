@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxOpenCv.h"
 #include "ofxGui.h"
 #include "ofxOscParameterSync.h"
 

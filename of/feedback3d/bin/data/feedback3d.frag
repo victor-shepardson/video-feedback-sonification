@@ -81,16 +81,18 @@ void main() {
 	vec3 p = raise(texcoordM.xy);
 
 	//warp
-	vec3 hsv;// = rgb2hsv(color_in);
+	vec3 hsv = rgb2hsv(color_in);
 	//vec2 disp = pol2car(vec2(hsv.y*warp, 2*PI*hsv.x));
-	vec3 displaced = clamp(u2b(color_in)*warp + raise(texcoordM), vec3(0), vec3(size3));
+	vec3 color_center;
+	if(slice.x*slice.y>1){
+		vec3 displaced = clamp(u2b(color_in)*warp + raise(texcoordM), vec3(0), vec3(size3));
+		color_center = texture2DRect(image2, flatten(displaced)).rgb;
+	}
+	else{
+		vec2 displaced = texcoordM + pol2car(vec2(hsv.y*warp, 2*PI*hsv.x));
+		color_center = texture2DRect(image2, displaced).rgb;
+	}
 
-	//convolution
-	vec3 color_center = texture2DRect(image2, flatten(displaced)).rgb;
-	//vec3 color_left = texture2DRect(image2, disp+texcoordM+vec2(-1.,0.)).rgb;
-	//vec3 color_right = texture2DRect(image2, disp+texcoordM+vec2(1.,0.)).rgb;
-	//vec3 color_up = texture2DRect(image2, disp+texcoordM+vec2(0.,1.)).rgb;
-	//vec3 color_down = texture2DRect(image2, disp+texcoordM+vec2(0.,-1.)).rgb;
 
 	vec3 color = color_center;//mix(color_center, .25*(color_left+color_right+color_up+color_down), sblur);
 
@@ -102,7 +104,15 @@ void main() {
 
 	//generators + feedback
 	//vec3 color_gen = texture2DRect(image1, texcoordM).rgb;
-	vec3 color_gen = vec3(sin((p.x+frame)*.05), sin((p.y+frame)*.055), cos((p.z+frame)*-.0555));
+
+	vec3 color_gen;
+	if(slice.x*slice.y>1){
+		//vec3 color_gen = vec3(sin(frame+p.x*.005), sin(frame+p.y*.0055), cos(frame+p.z*-.00555));
+		color_gen = sin(PI*(p.xyz*invsize3.xyz*5*vec3(.1,.11,.111)+frame*vec3(.01111, .011111, .0111111)));
+	}
+	else{
+		color_gen = sin(PI*(texcoordM.xyx*invsize.xyx*5*vec3(.1,.11,.111)+frame*vec3(.01111, -.011111, -.0111111)));
+	}
 	color = gen * color_gen + fb *color ;
 
 	//bounding function
